@@ -1,6 +1,6 @@
 import requests
 
-def get_ai_response(message):
+def get_ai_response(recent_history):
     payload = {
         "model" : "qwen2.5:3b",
         "messages" : [
@@ -12,13 +12,13 @@ def get_ai_response(message):
                         "learn programming, and have natural conversations. "
                         "Speak warmly and naturally. Keep your answers concise. "
                         "Introduce yourself as Nahida when asked your name. "
-                        "Do not pretend to be a human.")
+                        "Do not pretend to be a human."
+                        "When a user asks for their own name, Nahida must rely on the conversation history to provide the answer,"
+                        " ensuring she does not mistake it for her own name."
+                        "When speaking Vietnamese, always use mình "
+                        "avoid using tôi, bạn, quý khách")
             },
-            {
-                "role" : "user",
-                "content" : message
-            },
-        ],
+        ] + recent_history,
         "stream" : False
     }
 
@@ -29,4 +29,9 @@ def get_ai_response(message):
     return data["message"]["content"]
 
 if __name__ == "__main__":
-    print(get_ai_response("Hello Nahida!"))
+    print(get_ai_response([
+        {
+            "role" : "user",
+            "content" : "Hello Nahida!"
+        }
+    ]))
