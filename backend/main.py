@@ -1,5 +1,5 @@
 from brain import get_ai_response
-from memory import load_messages, save_message
+from memory import load_messages, save_message, search_messages
 
 def main():
     print("Nahida: Chào cậu! Hôm nay mình cùng học gì nào? 🌱")
@@ -20,6 +20,19 @@ def main():
 
         if message.strip() == "":
             print("Nahida: Cậu chưa nói gì mà!")
+            continue
+
+        if message.startswith("/search "):
+            keyword = message[8:].strip()
+            result = search_messages(keyword)
+
+
+            if not result:
+                print("Nahida không tìm thấy kí ức nào")
+            else:
+                for role, content in result:
+                    print(f"{role}: {content}")
+
             continue
 
         conversation_history.append({

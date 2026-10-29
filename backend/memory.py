@@ -32,9 +32,24 @@ def load_messages():
     conn.close()
     return messages
 
-if __name__ == "__main__":
-    save_message("user", "Mình đang học SQLite!")
+def search_messages(keyword):
+    conn = sqlite3.connect("nahida.db")
+
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "SELECT role, content FROM messages WHERE content LIKE ?",
+        ("%" + keyword + "%",)
+    )
+
+    messages = cursor.fetchall()
+
+    conn.close()
+
+    return messages
 
 if __name__ == "__main__":
-    history = load_messages()
-    print(history)
+    result = search_messages("SQLite")
+    print(result)
+
+
