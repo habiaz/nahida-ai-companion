@@ -1,9 +1,15 @@
 from brain import get_ai_response
+from memory import load_messages, save_message
 
 def main():
     print("Nahida: Chào cậu! Hôm nay mình cùng học gì nào? 🌱")
 
-    conversation_history = []
+    conversation_history = [
+    {"role": role, "content": content}
+    for role, content in load_messages()
+    ]
+
+    print("Loaded messages:", len(conversation_history))
 
     while True:
         message = input("You: ")
@@ -21,6 +27,8 @@ def main():
                                             "content" : message
                                         })
 
+        save_message("user", message)
+
         recent_history = conversation_history[-10:]
 
         reply = get_ai_response(recent_history)
@@ -30,6 +38,8 @@ def main():
                                     "role" : "assistant",
                                     "content" : reply
                                 })
+
+        save_message("assistant", reply)
 
 
 
