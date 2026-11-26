@@ -48,6 +48,40 @@ def search_messages(keyword):
 
     return messages
 
+def retrieve_memories(message, limit=5):
+    stopwords = {
+        "what", "is", "my", "do", "you", "remember",
+        "about", "the", "your", "are", "can",
+        "có", "nhớ", "của", "tui", "là", "gì", "không",
+        "hello", "hi", "hey", "nahida", "today", "how"
+    }
+
+    keywords = [
+        word.strip(".,!?;:").lower()
+        for word in message.split()
+        if len(word.strip(".,!?;:")) >= 3
+        and word.strip(".,!?;:").lower() not in stopwords
+    ]
+
+    candidates = []
+
+    for keyword in keywords:
+        for role, content in search_messages(keyword):
+            item = (role, content)
+
+            if role == "user" and item not in candidates:
+                candidates.append(item)
+
+    candidates.sort(
+        key=lambda item: (
+            sum(k in item[1].lower() for k in keywords),
+            "?" not in item[1]
+        ),
+        reverse=True
+    )
+
+    return candidates[:limit]
+
 if __name__ == "__main__":
     result = search_messages("SQLite")
     print(result)
